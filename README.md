@@ -6,7 +6,7 @@ produce evidence-backed Executive Briefs. It says so when the evidence isn't the
 
 ![CI](https://github.com/VishalkiranRaichur/admin-ai/actions/workflows/ci.yml/badge.svg)
 
-> **Status: v1.0 "ORION Core".** Ask, Investigate, multi-tenant workspaces and the
+> **Status: ORION Core, in active development.** Ask, Investigate, multi-tenant workspaces and the
 > ingestion pipeline are implemented and tested. Connectors, proactive alerts and
 > approved actions are the v2 roadmap (see [Roadmap](#roadmap)).
 
