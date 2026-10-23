@@ -14,9 +14,9 @@ from app.data_sources import find_workspace_data_source
 from app.db import get_db
 from app.models import DataSource, Document, Workspace
 from app.schemas import DocumentResponse
-from app.services.document_ingestion import ingest_document
 from app.services.document_processor import process_document
 from app.services.embedding_service import OpenAIConfigurationError
+from app.services.source_import import NormalizedIngestionItem, ingest_normalized_item
 from app.services.storage import delete_file, upload_file
 from app.workspaces import get_active_workspace, get_mutable_workspace
 
@@ -65,6 +65,11 @@ async def upload_document(
         data_source = await find_workspace_data_source(db, workspace.id, data_source_id)
         if data_source is None:
             raise HTTPException(status_code=404, detail="Data source not found.")
+        if data_source.source_type != "upload":
+            raise HTTPException(
+                status_code=400,
+                detail="This data source does not accept manual uploads.",
+            )
 
     filename = Path(file.filename or "unnamed").name
 
@@ -94,8 +99,6 @@ async def upload_document(
 
     document_id = uuid.uuid4()
 
-    storage_key = f"workspaces/{workspace.id}/documents/{document_id}/{filename}"
-
     content_type = file.content_type or "application/octet-stream"
 
     try:
@@ -103,19 +106,21 @@ async def upload_document(
             data_source.status = "ready"
             data_source.error = None
             data_source.last_synced_at = datetime.now(UTC)
-        document = await ingest_document(
+        outcome = await ingest_normalized_item(
             db=db,
             workspace_id=workspace.id,
-            file_bytes=file_bytes,
-            filename=filename,
-            content_type=content_type,
-            storage_key=storage_key,
+            item=NormalizedIngestionItem(
+                filename=filename,
+                content_type=content_type,
+                content=file_bytes,
+            ),
             upload=upload_file,
             delete=delete_file,
             processor=process_document,
             document_id=document_id,
-            data_source_id=data_source_id,
+            data_source=data_source,
         )
+        document = outcome.document
 
     except (OpenAIConfigurationError, OpenAIError, SQLAlchemyError, ValueError) as error:
         await _record_source_failure(db, workspace.id, data_source_id)

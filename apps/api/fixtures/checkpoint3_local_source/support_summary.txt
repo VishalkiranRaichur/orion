@@ -1,0 +1,1 @@
+Cedar Ridge reported three unresolved dashboard export failures during July and August. Support confirmed that the CSV export workaround omits regional filters, so it does not satisfy the customer's renewal requirement. The documents indicate these reporting issues are renewal risks, but they do not prove the customer will decline to renew.

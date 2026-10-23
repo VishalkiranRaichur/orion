@@ -36,7 +36,7 @@ export type DataSource = {
   id: string;
   workspace_id: string;
   name: string;
-  source_type: "upload" | "demo";
+  source_type: "upload" | "demo" | "local_fixture";
   status: "ready" | "error";
   external_key: string | null;
   last_synced_at: string | null;
@@ -48,6 +48,9 @@ export type DataSource = {
 export type Document = {
   id: string;
   data_source_id: string | null;
+  source_item_id: string | null;
+  source_modified_at: string | null;
+  source_synced_at: string | null;
   filename: string;
   content_type: string;
   size_bytes: number;

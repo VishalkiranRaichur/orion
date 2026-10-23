@@ -9,6 +9,9 @@ class DocumentResponse(BaseModel):
 
     id: uuid.UUID
     data_source_id: uuid.UUID | None
+    source_item_id: str | None
+    source_modified_at: datetime | None
+    source_synced_at: datetime | None
     filename: str
     content_type: str
     size_bytes: int

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import uuid
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -79,6 +80,8 @@ def _alembic_config(database: str) -> Config:
 @contextmanager
 def temporary_database() -> Iterator[tuple[str, Config]]:
     if not asyncio.run(_database_available()):
+        if os.environ.get("ORION_REQUIRE_POSTGRES") == "1":
+            pytest.fail("PostgreSQL is required (ORION_REQUIRE_POSTGRES=1) but is not reachable")
         pytest.skip("PostgreSQL is not available for migration integration tests")
     original_url = settings.database_url
     database = f"orion_migration_{uuid.uuid4().hex}"

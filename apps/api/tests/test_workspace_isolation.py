@@ -104,11 +104,17 @@ def test_every_persisted_capability_has_required_workspace_scope() -> None:
     assert ("workspace_id", "entity_type", "external_key") in entity_unique
     assert ("workspace_id", "record_type", "external_key") in record_unique
     assert Document.__table__.c.data_source_id.nullable is True
+    assert Document.__table__.c.source_item_id.nullable is True
+    assert Document.__table__.c.source_synced_at.nullable is True
     source_foreign_keys = {
         tuple(constraint.column_keys)
         for constraint in Document.__table__.foreign_key_constraints
     }
     assert ("workspace_id", "data_source_id") in source_foreign_keys
+    source_item_indexes = {
+        tuple(index.columns.keys()) for index in Document.__table__.indexes if index.unique
+    }
+    assert ("workspace_id", "data_source_id", "source_item_id") in source_item_indexes
 
 
 def test_workspace_header_is_required() -> None:

@@ -115,6 +115,8 @@ def test_upload_stores_and_processes_document(monkeypatch) -> None:
     assert response.json()["filename"] == "notes.txt"
     assert response.json()["status"] == "processed"
     assert response.json()["data_source_id"] is None
+    assert response.json()["source_item_id"] is None
+    assert response.json()["source_synced_at"] is None
     assert response.json()["storage_key"].startswith(f"workspaces/{WORKSPACE_ID}/documents/")
     assert session.committed is True
 

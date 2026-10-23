@@ -249,6 +249,45 @@ def test_cross_workspace_source_is_rejected_before_storage(monkeypatch) -> None:
     assert storage_called is False
 
 
+def test_local_fixture_source_rejects_manual_upload(monkeypatch) -> None:
+    workspace = _workspace()
+    source = _source(workspace.id)
+    source.source_type = "local_fixture"
+    session = FakeSession()
+    storage_called = False
+
+    async def resolve_source(*_args):
+        return source
+
+    def unexpected_storage(*_args):
+        nonlocal storage_called
+        storage_called = True
+        raise AssertionError("storage must not run")
+
+    async def override_workspace() -> Workspace:
+        return workspace
+
+    async def override_database():
+        yield session
+
+    monkeypatch.setattr(documents_router, "find_workspace_data_source", resolve_source)
+    monkeypatch.setattr(documents_router, "upload_file", unexpected_storage)
+    app.dependency_overrides[get_mutable_workspace] = override_workspace
+    app.dependency_overrides[get_db] = override_database
+    try:
+        response = TestClient(app).post(
+            "/api/v1/documents/upload",
+            files={"file": ("contract.txt", b"A contract fact.", "text/plain")},
+            data={"data_source_id": str(source.id)},
+        )
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "This data source does not accept manual uploads."
+    assert storage_called is False
+
+
 def test_source_import_failure_is_scoped_and_persisted(monkeypatch) -> None:
     workspace = _workspace()
     source = _source(workspace.id)

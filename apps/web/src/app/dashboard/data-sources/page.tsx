@@ -192,7 +192,7 @@ export default function DataSourcesPage() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{source.name}</p>
                         <p className="mt-1 text-xs capitalize text-[#8c8ca8]">
-                          {source.source_type} · {source.status}
+                          {source.source_type.replace("_", " ")} · {source.status}
                         </p>
                         <p className="mt-2 text-[11px] text-[#8c8ca8]/60">
                           Last import: {formatDate(source.last_synced_at)}
@@ -216,7 +216,7 @@ export default function DataSourcesPage() {
               <span className="text-xs text-[#8c8ca8]/50">{documents.length}</span>
             </div>
             <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f0f14]">
-              {selectedSource && !workspace?.is_demo && (
+              {selectedSource?.source_type === "upload" && !workspace?.is_demo && (
                 <div className="border-b border-white/[0.055] p-4">
                   <button
                     type="button"
@@ -245,6 +245,11 @@ export default function DataSourcesPage() {
                   The demo source and its documents are read-only.
                 </div>
               )}
+              {selectedSource?.source_type === "local_fixture" && !workspace?.is_demo && (
+                <div className="border-b border-white/[0.055] px-4 py-3 text-xs text-[#8c8ca8]">
+                  This local acceptance source is managed by the operator importer.
+                </div>
+              )}
               {!selectedSource ? (
                 <div className="px-6 py-12 text-center text-sm text-[#8c8ca8]">
                   Select or create a source to view its documents.
@@ -265,6 +270,11 @@ export default function DataSourcesPage() {
                       <p className="mt-1 text-xs capitalize text-[#8c8ca8]/65">
                         {document.status}
                       </p>
+                      {document.source_synced_at && (
+                        <p className="mt-1 text-[11px] text-[#8c8ca8]/50">
+                          Synced {formatDate(document.source_synced_at)}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))

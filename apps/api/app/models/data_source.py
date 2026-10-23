@@ -27,7 +27,7 @@ class DataSource(Base):
     __tablename__ = "data_sources"
     __table_args__ = (
         CheckConstraint(
-            "source_type IN ('upload', 'demo')",
+            "source_type IN ('upload', 'demo', 'local_fixture')",
             name="ck_data_sources_source_type",
         ),
         CheckConstraint(

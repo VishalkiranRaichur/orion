@@ -1,0 +1,19 @@
+{
+  "fixture_key": "checkpoint3-customer-renewal-v1",
+  "items": [
+    {
+      "source_item_id": "cedar-ridge/renewal-brief",
+      "filename": "Cedar Ridge Renewal Brief.txt",
+      "path": "renewal_brief.txt",
+      "content_type": "text/plain",
+      "source_modified_at": "2026-08-12T16:00:00Z"
+    },
+    {
+      "source_item_id": "cedar-ridge/support-summary",
+      "filename": "Cedar Ridge Support Summary.txt",
+      "path": "support_summary.txt",
+      "content_type": "text/plain",
+      "source_modified_at": "2026-08-13T18:30:00Z"
+    }
+  ]
+}
