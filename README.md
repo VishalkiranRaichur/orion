@@ -8,7 +8,7 @@ produce evidence-backed Executive Briefs. It says so when the evidence isn't the
 
 > **Status: ORION Core, in active development.** Ask, Investigate, multi-tenant workspaces and the
 > ingestion pipeline are implemented and tested. Connectors, proactive alerts and
-> approved actions are the v2 roadmap (see [Roadmap](#roadmap)).
+> approved actions are on the roadmap (see [Roadmap](#roadmap)).
 
 ## What it does
 
@@ -36,13 +36,19 @@ From the automated test suite, run in CI against PostgreSQL 16 with pgvector:
 
 | Check | Result |
 | --- | --- |
-| Automated tests | 65 passing: API flows, ingestion, migrations, tenant isolation, investigation engine, evaluation |
-| Revenue investigation on the synthetic demo company | Correctly computed an 18% decline ($500K to $410K) and attributed 88.9% of it to one customer; explanation validated |
+| Automated tests | 68 passing: API flows, ingestion, migrations, tenant isolation, investigation engine, evaluation |
+| Revenue investigation on the synthetic demo company (evaluation) | Correctly computed an 18% decline ($500K to $410K), attributed 88.9% of it to one customer, and validated the causal explanation when the supporting evidence was present |
 | Negative control: same question with the supporting evidence removed | No explanation stated; brief confidence capped at 0.44 |
 | Cross-workspace isolation | Every retrieval and investigation tool is tested to reject data from another workspace |
 
 The negative control matters most. An executive tool that invents causes is worse than
 no tool at all, so ORION is tested for refusing as well as for answering.
+
+Manual acceptance testing also found a real planner defect: the LLM planner searched for
+supporting records only in the month revenue fell, so incidents from the weeks before were
+missed and the explanation could not validate. The plan validator now always extends causal
+evidence searches to the month before the comparison period, whatever the model proposes,
+and a regression test replays the exact failing plan.
 
 ## Architecture
 
@@ -97,7 +103,7 @@ admin-ai/
 │   └── api/                 # FastAPI backend
 │       ├── app/investigations/   # planner, tools, claims, orchestrator, budgets
 │       ├── app/services/         # ingestion, parsing, retrieval, RAG, storage
-│       └── tests/                # 65 tests incl. migration and evaluation suites
+│       └── tests/                # 68 tests incl. migration, evaluation and regression suites
 ├── workers/celery/          # background investigation worker
 ├── demo/orion_company/      # synthetic company dataset + expected findings
 ├── infra/docker-compose.yml # Postgres+pgvector, Redis, MinIO
@@ -199,7 +205,7 @@ cd apps/web && npm run lint
 
 ## Roadmap
 
-ORION Core (v1.0) is the foundation. The full product vision is in
+ORION Core is the foundation. The full product vision is in
 [docs/ORION_MASTER_SPEC.md](docs/ORION_MASTER_SPEC.md). Next, in order:
 
 - [ ] Team membership and roles, invites, rate limits, production auth hardening
@@ -212,7 +218,7 @@ ORION Core (v1.0) is the foundation. The full product vision is in
 - [ ] Executive dashboard and guided onboarding
 - [ ] Public deployment
 
-## Known limitations (v1.0)
+## Known limitations
 
 - Documents are uploaded manually; there are no live connectors yet.
 - The investigation engine is evaluated on one synthetic company dataset, and its
