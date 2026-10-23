@@ -213,6 +213,42 @@ class DeterministicPlannerGateway:
         )
 
 
+
+CAUSAL_LOOKBACK_MONTHS = 1
+
+
+def _months_before(value: date, months: int) -> date:
+    """Return the first day of the month `months` before `value`'s month."""
+    index = value.year * 12 + (value.month - 1) - months
+    return date(index // 12, index % 12 + 1, 1)
+
+
+def _widen_causal_evidence_windows(plan: InvestigationPlan) -> None:
+    """Make related-record searches reach back before the comparison period.
+
+    Causes precede their effects: an incident or slipped project that explains a
+    July decline usually happens in May or June. A planner that limits the search
+    to the period of the change would silently miss that evidence, so the window
+    is widened here, independent of what the model proposed.
+    """
+    comparison_starts = [
+        step.tool_call.arguments.comparison_period_start
+        for step in plan.steps
+        if step.tool_call.tool == InvestigationToolKind.RANK_ENTITY_CONTRIBUTIONS
+    ]
+    if not comparison_starts:
+        return
+    lookback = _months_before(min(comparison_starts), CAUSAL_LOOKBACK_MONTHS)
+    lookback_start = datetime(lookback.year, lookback.month, lookback.day, tzinfo=UTC)
+    for step in plan.steps:
+        if step.tool_call.tool != InvestigationToolKind.QUERY_RELATED_RECORDS:
+            continue
+        arguments = step.tool_call.arguments
+        assert isinstance(arguments, QueryRelatedRecordsInput)
+        if arguments.start is not None and arguments.start > lookback_start:
+            arguments.start = lookback_start
+
+
 def canonicalize_plan(plan: InvestigationPlan) -> InvestigationPlan:
     if len(plan.steps) > 8:
         raise PlanValidationError("Plans may contain at most eight steps")
@@ -303,4 +339,5 @@ def canonicalize_plan(plan: InvestigationPlan) -> InvestigationPlan:
     if missing:
         names = ", ".join(sorted(item.value for item in missing))
         raise PlanValidationError(f"Metric plan is missing required steps: {names}")
+    _widen_causal_evidence_windows(plan)
     return InvestigationPlan.model_validate(plan.model_dump())
