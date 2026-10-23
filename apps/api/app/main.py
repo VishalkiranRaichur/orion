@@ -1,22 +1,11 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.db import create_tables
-from app.routers import ask, documents, health
-
-
-@asynccontextmanager
-async def lifespan(_app: FastAPI):
-    await create_tables()
-    yield
-
+from app.routers import ask, data_sources, documents, health, investigations, workspaces
 
 app = FastAPI(
     title=settings.app_name,
-    lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -27,6 +16,12 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.include_router(
+    workspaces.router,
+    prefix=f"{settings.api_prefix}/workspaces",
+    tags=["workspaces"],
 )
 
 app.include_router(
@@ -42,9 +37,21 @@ app.include_router(
 )
 
 app.include_router(
+    data_sources.router,
+    prefix=f"{settings.api_prefix}/data-sources",
+    tags=["data-sources"],
+)
+
+app.include_router(
     ask.router,
     prefix=settings.api_prefix,
     tags=["ask"],
+)
+
+app.include_router(
+    investigations.router,
+    prefix=f"{settings.api_prefix}/investigations",
+    tags=["investigations"],
 )
 
 

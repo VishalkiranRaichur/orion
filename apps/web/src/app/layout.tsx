@@ -1,14 +1,11 @@
 import { type Metadata } from "next";
-import { Inter } from "next/font/google";
 
 import { AuthProvider } from "@/components/auth-provider";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Admin AI",
-  description: "AI-powered operating system for startups and small companies",
+  title: "ORION — Executive Intelligence",
+  description: "Evidence-backed AI intelligence for company decisions",
 };
 
 export default function RootLayout({
@@ -17,10 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </AuthProvider>
+    <html lang="en">
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
   );
 }

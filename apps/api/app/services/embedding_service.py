@@ -1,15 +1,12 @@
-from openai import AsyncOpenAI
-
 from app.config import settings
+from app.services.openai_client import OpenAIConfigurationError, get_openai_client
 
-EMBEDDING_MODEL = "text-embedding-3-small"
-
-
-def get_openai_client() -> AsyncOpenAI:
-    if not settings.openai_api_key:
-        raise ValueError("OPENAI_API_KEY is not configured.")
-
-    return AsyncOpenAI(api_key=settings.openai_api_key)
+__all__ = [
+    "OpenAIConfigurationError",
+    "generate_embedding",
+    "generate_embeddings",
+    "get_openai_client",
+]
 
 
 async def generate_embedding(text: str) -> list[float]:
@@ -21,7 +18,7 @@ async def generate_embedding(text: str) -> list[float]:
     client = get_openai_client()
 
     response = await client.embeddings.create(
-        model=EMBEDDING_MODEL,
+        model=settings.embedding_model,
         input=cleaned_text,
         encoding_format="float",
     )
@@ -46,7 +43,7 @@ async def generate_embeddings(
     client = get_openai_client()
 
     response = await client.embeddings.create(
-        model=EMBEDDING_MODEL,
+        model=settings.embedding_model,
         input=cleaned_texts,
         encoding_format="float",
     )

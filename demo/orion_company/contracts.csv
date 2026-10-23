@@ -1,0 +1,3 @@
+contract_id,customer_id,renewal_date,previous_value_usd,renewed_value_usd,currency,document
+northstar-2026,northstar,2026-07-01,120000,40000,USD,contracts/northstar_2026.md
+aster-2026,aster,2026-07-01,150000,145000,USD,contracts/aster_2026.md

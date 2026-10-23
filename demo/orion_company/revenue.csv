@@ -1,0 +1,9 @@
+customer_id,period_start,period_end,recognized_revenue_usd,currency
+northstar,2026-06-01,2026-06-30,120000,USD
+northstar,2026-07-01,2026-07-31,40000,USD
+aster,2026-06-01,2026-06-30,150000,USD
+aster,2026-07-01,2026-07-31,145000,USD
+redwood,2026-06-01,2026-06-30,130000,USD
+redwood,2026-07-01,2026-07-31,125000,USD
+luma,2026-06-01,2026-06-30,100000,USD
+luma,2026-07-01,2026-07-31,100000,USD

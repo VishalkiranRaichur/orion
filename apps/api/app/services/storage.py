@@ -2,6 +2,7 @@ import io
 
 import boto3
 from botocore.client import BaseClient
+from botocore.exceptions import ClientError
 
 from app.config import settings
 
@@ -16,11 +17,26 @@ def get_s3_client() -> BaseClient:
     )
 
 
+def ensure_bucket() -> None:
+    client = get_s3_client()
+
+    try:
+        client.head_bucket(Bucket=settings.s3_bucket)
+    except ClientError as error:
+        error_code = error.response.get("Error", {}).get("Code")
+
+        if error_code not in {"404", "NoSuchBucket", "NotFound"}:
+            raise
+
+        client.create_bucket(Bucket=settings.s3_bucket)
+
+
 def upload_file(
     file_bytes: bytes,
     storage_key: str,
     content_type: str,
 ) -> str:
+    ensure_bucket()
     client = get_s3_client()
 
     client.upload_fileobj(
@@ -31,6 +47,12 @@ def upload_file(
     )
 
     return storage_key
+
+
+def delete_file(storage_key: str) -> None:
+    client = get_s3_client()
+    client.delete_object(Bucket=settings.s3_bucket, Key=storage_key)
+
 
 def download_file(storage_key: str) -> bytes:
     client = get_s3_client()

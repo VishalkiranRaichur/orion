@@ -11,7 +11,7 @@ export default function HomePage() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-sm font-bold text-accent-foreground">
             A
           </div>
-          <span className="text-lg font-semibold">Admin AI</span>
+          <span className="text-lg font-semibold">ORION</span>
         </div>
         <LandingAuthButtons />
       </header>
@@ -19,15 +19,14 @@ export default function HomePage() {
       <main className="mx-auto max-w-6xl px-6 pb-24 pt-16">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-sm font-medium uppercase tracking-wide text-accent">
-            AI Company Operating System
+            AI Executive Intelligence
           </p>
           <h1 className="mb-6 text-5xl font-bold tracking-tight text-foreground">
             Make better business decisions from your internal data
           </h1>
           <p className="mb-10 text-lg text-muted-foreground">
-            Upload meeting notes, customer feedback, contracts, and reports into one
-            platform. Ask business questions in natural language and get answers backed
-            by your source documents.
+            Ask company questions, investigate business changes, and get conclusions
+            backed by measured data and source evidence.
           </p>
           <LandingAuthButtons variant="hero" />
           {!isClerkConfigured && (

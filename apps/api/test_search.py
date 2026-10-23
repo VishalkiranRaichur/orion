@@ -1,6 +1,7 @@
 import asyncio
 
 from app.db import async_session
+from app.models import DEMO_WORKSPACE_ID
 from app.services.search_service import semantic_search
 
 
@@ -8,6 +9,7 @@ async def main():
     async with async_session() as db:
         results = await semantic_search(
             db,
+            DEMO_WORKSPACE_ID,
             "What internships or programs pay students?",
             3,
         )

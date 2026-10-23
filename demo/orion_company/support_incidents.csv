@@ -1,0 +1,4 @@
+incident_id,customer_id,occurred_at,severity,title,content
+inc-northstar-1,northstar,2026-05-28T10:00:00Z,sev1,Export jobs failing,"Northstar production exports repeatedly failed and blocked scheduled reporting."
+inc-northstar-2,northstar,2026-06-12T09:30:00Z,sev1,Export data incomplete,"Northstar exports completed with missing records after retries."
+inc-aster-1,aster,2026-06-10T11:00:00Z,sev3,Minor dashboard issue,"Aster reported a cosmetic dashboard issue with no operational impact."

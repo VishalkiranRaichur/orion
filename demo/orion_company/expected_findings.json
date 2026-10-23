@@ -1,0 +1,12 @@
+{
+  "question": "Why did revenue decline in July?",
+  "metric": "recognized_revenue_usd",
+  "comparison_total": "500000",
+  "current_total": "410000",
+  "absolute_change": "-90000",
+  "percentage_change": "-18",
+  "primary_entity": "Northstar Health",
+  "primary_entity_change": "-80000",
+  "contribution_percentage": "88.8889",
+  "minimum_hypothesis_confidence": 0.70
+}

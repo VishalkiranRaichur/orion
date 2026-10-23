@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 jobs:
   web:
@@ -38,6 +36,23 @@ jobs:
     defaults:
       run:
         working-directory: apps/api
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: adminai
+          POSTGRES_PASSWORD: adminai
+          POSTGRES_DB: adminai
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U adminai -d adminai"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+asyncpg://adminai:adminai@localhost:5432/adminai
+      ORION_REQUIRE_POSTGRES: "1"
     steps:
       - uses: actions/checkout@v4
 
@@ -50,8 +65,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Enable pgvector
+        run: PGPASSWORD=adminai psql -h localhost -U adminai -d adminai -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
       - name: Lint
         run: ruff check app tests
 
-      - name: Test
-        run: pytest -q
+      - name: Test (includes migrations and the demo evaluation)
+        run: pytest -q -rs

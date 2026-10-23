@@ -1,0 +1,6 @@
+{
+  "exclude_support_incidents": ["inc-northstar-1", "inc-northstar-2"],
+  "exclude_projects": ["export-remediation"],
+  "expected_likely_explanation": null,
+  "maximum_brief_confidence": 0.44
+}
