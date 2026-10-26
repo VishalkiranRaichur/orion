@@ -4,7 +4,7 @@
 company's own documents and data, and runs bounded, multi-step investigations that
 produce evidence-backed Executive Briefs. It says so when the evidence isn't there.
 
-![CI](https://github.com/VishalkiranRaichur/admin-ai/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/VishalkiranRaichur/orion/actions/workflows/ci.yml/badge.svg)
 
 > **Status: ORION Core, in active development.** Ask, Investigate, multi-tenant workspaces and the
 > ingestion pipeline are implemented and tested. Connectors, proactive alerts and
